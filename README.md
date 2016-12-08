@@ -29,7 +29,8 @@ grunt.initConfig({
       accessKeyId: 'accessKeyId',
       secretAccessKey: 'secretAccessKey',
       endpoint: 'http://oss-cn-hangzhou.aliyuncs.com',
-      bucketName:'bucket'
+      bucketName:'bucket',
+      cacheControl:'no-cache'
     },
     your_target: {
       // Target-specific file lists and/or options go here.
@@ -61,10 +62,18 @@ Type: `String`
 
 AliYun OSS bucketName  
 
+#### options.bucketName
+Type: `String` Default value:`no-cache`
+
+Cache Control in the Http Header,default value is `no-cache`
+
+See [Http Cache](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching)
+
+
 ### Usage Examples
 
 #### Default Options
-In this example, the default options are used to upload all file expect html file in dist directory to oss 'bucket1' bucket,and the oss root path is 'static/'
+In this example, the default options are used to upload all file expect html file in `dist` directory to oss `bucket1` bucket,and the oss root path is `static/`
 
 ```js
 grunt.initConfig({
@@ -74,7 +83,8 @@ grunt.initConfig({
                       accessKeyId: 'xxxx',
                       secretAccessKey: 'xxxx',
                       endpoint: 'http://oss-cn-hangzhou.aliyuncs.com',
-                      bucketName:'bucket1'
+                      bucketName:'bucket1',
+                      cacheControl:'no-cache'
                   },
                   files: [
                       {
@@ -92,4 +102,5 @@ grunt.initConfig({
 
 
 ## Release History
-v0.1.0 first version
+- v0.2.0 fix upload bug,support ContentType,cache control.
+- v0.1.0 first version

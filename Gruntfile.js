@@ -33,17 +33,18 @@ module.exports = function (grunt) {
         aliyun_oss: {
             default_options: {
                 options: {
-                    accessKeyId: 'xxxx',
-                    secretAccessKey: 'xxxx',
+                    accessKeyId: 'xxx',
+                    secretAccessKey: 'xxx',
                     endpoint: 'http://oss-cn-hangzhou.aliyuncs.com',
-                    bucketName:'xxxx'
+                    bucketName:'xxx',
+                    cacheControl:'no-cache'
                 },
                 files: [
                     {
                         expand: true,
                         cwd: 'dist',
                         src: ['**/*','!**/*.html'],
-                        dest:'loam/'
+                        dest:'static/'
                     }
                 ]
             }

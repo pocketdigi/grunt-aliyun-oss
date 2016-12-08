@@ -11,10 +11,13 @@
 var ALY = require('aliyun-sdk');
 var fs = require('fs');
 var path = require('path');
+var ContentType= require('./content_type');
 
 module.exports = function (grunt) {
     var doneCount=0;
     var fileCount=0;
+    var cacheControl;
+    var bucketName;
     grunt.registerMultiTask('aliyun_oss', 'aliyun oss plugin for grunt', function () {
         var done = this.async();
         var options = this.options({
@@ -25,7 +28,8 @@ module.exports = function (grunt) {
         var accessKeyId = options.accessKeyId;
         var secretAccessKey = options.secretAccessKey;
         var endpoint = options.endpoint;
-        var bucketName = options.bucketName;
+        bucketName = options.bucketName;
+        cacheControl=options.cacheControl;
 
         if (accessKeyId == null) {
             grunt.log.error('accessKeyId must not be null.');
@@ -43,6 +47,9 @@ module.exports = function (grunt) {
             grunt.log.error('bucketName must not be null.');
             return;
         }
+        if (cacheControl == null) {
+            cacheControl='no-cache';
+        }
 
 
         var oss = new ALY.OSS({
@@ -57,7 +64,7 @@ module.exports = function (grunt) {
 
         fileCount=this.files.length;
         if(fileCount==0) {
-            grunt.log.writeln("no file uploaded");
+            grunt.log.ok("no file uploaded");
             return;
         }
 
@@ -91,13 +98,15 @@ module.exports = function (grunt) {
                 grunt.log.error('error:', err);
                 return;
             }
+            var extName=path.extname(src);
+            var contentType=ContentType.getType(extName);
             oss.putObject({
-                Bucket: 'ddlwechat',
+                Bucket: bucketName,
                 Key: dst,
                 Body: data,
                 AccessControlAllowOrigin: '',
-                ContentType: 'text/plain',
-                CacheControl: 'no-cache',
+                ContentType: contentType,
+                CacheControl: cacheControl,
                 ContentDisposition: '',
                 ContentEncoding: 'utf-8',
                 ServerSideEncryption: 'AES256',
@@ -108,11 +117,11 @@ module.exports = function (grunt) {
                     done(false);
                     return false;
                 }
-                grunt.log.writeln(src+" uploaded");
+                grunt.log.ok(src,"uploaded");
                 doneCount++;
                 if(fileCount==doneCount){
                     done(true);
-                    grunt.log.writeln(fileCount+"files uploaded");
+                    grunt.log.ok(fileCount,"files uploaded.");
                 }
                 return true;
             });
